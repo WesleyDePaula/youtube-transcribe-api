@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from transcription_trigger import start_transcription
 from utils import extract_video_id, build_transcription_s3_uri
 from yt_dlp_client import download
-from aws.s3_client import upload_to_s3
+from s3_client import upload_to_s3
 
 app = Flask(__name__)
 
@@ -44,5 +44,6 @@ def get_resume_video():
     if not video_id:
         return jsonify({"error": "Missing video_id"}), 400
     
-    
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080) 
     
