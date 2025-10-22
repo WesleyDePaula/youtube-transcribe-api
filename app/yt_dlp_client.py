@@ -1,18 +1,16 @@
 import yt_dlp
-import logging
-from utils import extract_video_id
+from utils import extract_video_id, get_logger
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger = get_logger(__name__)
 
-# TODO: Verificar se arquivo de áudio será deletado da /tmp/ no final do upload ao S3
+# TODO: Verificar se arquivo de áudio será deletado da /tmp/ no final do upload
 def download_from_url(video_url: str, video_id: str):
     filename = f"/tmp/youtube-audio-{video_id}"
 
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': filename,
-        'cookiefile': '/app/cookies.txt', 
+        'cookie': cookie, 
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',

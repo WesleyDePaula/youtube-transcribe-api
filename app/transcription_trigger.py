@@ -1,6 +1,7 @@
 import boto3
+import json
 
-lambda_client = boto3.client("lambda", region_name='us-west-2')
+lambda_client = boto3.client("lambda", region_name='us-east-2')
 
 def start_transcription(video_id, s3_uri):
     payload = {

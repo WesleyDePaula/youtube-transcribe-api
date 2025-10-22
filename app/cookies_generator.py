@@ -1,4 +1,7 @@
 from playwright.sync_api import sync_playwright
+from utils import get_logger
+
+logger = get_logger(__name__)
 
 def save_cookies_to_txt(cookies, path):
     """
@@ -16,6 +19,7 @@ def save_cookies_to_txt(cookies, path):
             value = cookie.get("value", "")
             line = f"{domain}\t{flag}\t{path_cookie}\t{secure}\t{expiry}\t{name}\t{value}\n"
             f.write(line)
+        
 
 def generate_youtube_cookies():
     """
@@ -29,7 +33,17 @@ def generate_youtube_cookies():
         page.wait_for_timeout(5000) 
 
         cookies = context.cookies()
-        save_cookies_to_txt(cookies, "/app/cookies.txt")
+        save_cookies_to_txt(cookies, "/tmp/cookies.txt")
+
+        # Log the contents of the saved cookies.txt for debugging
+        try:
+            with open("/tmp/cookies.txt", "r", encoding="utf-8") as cf:
+                contents = cf.read()
+                logger.debug("Contents of /tmp/cookies.txt:\n%s", contents)
+                # Also print to stdout explicitly for immediate console visibility
+                print(contents)
+        except Exception as e:
+            logger.error("Failed to read /tmp/cookies.txt: %s", e)
 
         browser.close()
 
