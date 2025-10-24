@@ -1,9 +1,9 @@
 import os
 from flask import Flask, request, jsonify
 from transcription_trigger import start_transcription
-from utils import extract_video_id, build_transcription_s3_uri, get_logger
+from utils import extract_video_id, get_logger
 from yt_dlp_client import download
-from s3_client import upload_to_s3, get_s3_uri_from_video_id
+from s3_client import upload_to_s3, get_s3_uri_from_video_id, get_transcription_presigned_URL
 from cookies_generator import generate_youtube_cookies
 
 app = Flask(__name__)
@@ -65,18 +65,24 @@ def start_resume_from_video_id():
     start_transcription(video_id, get_s3_uri_from_video_id(video_id))
     
     return jsonify({
-            "message": "Transcrição iniciada com sucesso.",
+            "status": "Processing",
             "video_id": video_id,
         })
     
     
-@app.route("/getResume", methods=["GET"])
+@app.route("/getTranscription", methods=["GET"])
 def get_resume_video():
     data = request.get_json()
     video_id = data.get("video_id")
     
     if not video_id:
         return jsonify({"error": "Missing video_id"}), 400
+    
+    uri = get_transcription_presigned_URL(video_id)
+    return jsonify({
+            "uri": uri,
+        })
+
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080) 

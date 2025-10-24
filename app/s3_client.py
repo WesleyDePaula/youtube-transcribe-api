@@ -35,6 +35,20 @@ def get_resume_presigned_URL(video_id):
     )
     return presigned_url
 
+def get_transcription_presigned_URL(video_id):
+    '''
+    Gerar uma URL para download do arquivo da transcrição sem precisar de autenticação na AWS.
+    '''
+    key_name = f"{video_id}/transcription-{video_id}.txt"
+    
+    logger.info(f"### Gerando URL pré-assinada para o arquivo: S3://{BUCKET_NAME}/{key_name}")
+    presigned_url = s3.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': BUCKET_NAME, 'Key': key_name},
+        ExpiresIn=3600
+    )
+    return presigned_url
+
 def get_s3_uri_from_video_id(video_id):
     '''
     Retorna a URI S3 do áudio baseado no video_id.

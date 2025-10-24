@@ -31,11 +31,9 @@ def lambda_handler(event, context):
         resp = requests.post(f'{whisper_url}/transcribe', headers=headers, files=files, timeout=600).json()
         
     task_id = resp["task_id"]
-    print(task_id)
     processing = True
     while processing:
         result = requests.get(f"{whisper_url}/status/{task_id}", headers=headers, timeout=600).json()
-        print(result)
         if result['status'] == 'completed':
             processing = False
         else:
@@ -59,18 +57,3 @@ def lambda_handler(event, context):
         "s3_uri": s3_uri
     }
     
-    # chamada transcribe -- NÃO FUNCIONA, TA DE ENFEITE PARA CASO EU PRECISE
-    # transcribe = boto3.client("transcribe", region_name="us-east-2")
-    # job_name = f"transcribe-{video_id}"
-    # transcribe.start_transcription_job(
-    #     TranscriptionJobName=job_name,
-    #     IdentifyLanguage=True,
-    #     MediaFormat="mp3",
-    #     Media={"MediaFileUri": s3_uri},
-    #     OutputBucketName="amzn-s3-transciption-audios-bucket",
-    #     OutputKey=f"{video_id}/"
-    # )
-    # return {"message": "Transcription started", "job_name": job_name}
-
-
-
