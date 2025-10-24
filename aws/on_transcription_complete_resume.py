@@ -22,6 +22,10 @@ transcribe = boto3.client("transcribe")
 openai_client = OpenAI()
 openai_client.api_key = OPENAI_API_KEY
 
+#
+#    Devido aos custos da OpenAI e de outras aplicações AI Generativas, não foi possível desenvolver esta feature
+#
+
 def lambda_handler(event, context):
     sns_message = event["Records"][0]["Sns"]["Message"]
     logger.info(f"📥 Evento recebido: {sns_message}")
